@@ -109,7 +109,19 @@ export default function StartPage() {
               </h1>
             </div>
             
-            <div className="flex items-center">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => router.push('/')}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => router.push('/status')}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Status
+              </button>
               <ConnectWallet />
             </div>
           </div>

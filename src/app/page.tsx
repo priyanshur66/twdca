@@ -12,7 +12,19 @@ const Navbar = () => {
             </h1>
           </div>
           
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
+            <a 
+              href="/status" 
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              Status
+            </a>
+            <a 
+              href="/start" 
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              Fund Agent
+            </a>
             <ConnectWallet />
           </div>
         </div>
