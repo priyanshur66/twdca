@@ -14,6 +14,7 @@ export default function StatusPage() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalProfit, setTotalProfit] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
     if (connected && account) {
@@ -64,6 +65,34 @@ export default function StatusPage() {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const handleTakeExit = async () => {
+    if (!account) return;
+    if (totalProfit <= 0) return;
+    try {
+      setIsExiting(true);
+      const res = await fetch('/api/take-exit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          walletAddress: account.address.toString(),
+          amount: totalProfit,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Unknown error');
+      }
+      alert(`Exit successful! Tx hash: ${data.txHash}`);
+      // Refresh data after successful withdrawal
+      fetchUserData();
+    } catch (err: any) {
+      console.error(err);
+      alert(`Exit failed: ${err.message}`);
+    } finally {
+      setIsExiting(false);
+    }
   };
 
   if (!connected) {
@@ -163,6 +192,19 @@ export default function StatusPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Take Exit Button */}
+              {totalProfit > 0 && (
+                <div className="flex justify-center mb-12">
+                  <button
+                    onClick={handleTakeExit}
+                    disabled={isExiting}
+                    className={`bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 ${isExiting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {isExiting ? 'Processing...' : `Take Exit (${totalProfit.toFixed(2)} APT)`}
+                  </button>
+                </div>
+              )}
 
               {/* Trades History */}
               <div className="bg-gray-900/40 rounded-2xl p-6 border border-gray-800">
