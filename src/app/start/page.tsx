@@ -4,6 +4,7 @@ import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ConnectWallet from "@/components/ConnectWallet";
+import { updateUserInvestment, createTrade } from "@/lib/database";
 
 export default function StartPage() {
   const { connected, account, wallet, network, signAndSubmitTransaction } = useWallet();
@@ -38,6 +39,9 @@ export default function StartPage() {
     try {
       // Convert APT to Octas (1 APT = 100,000,000 Octas)
       const amountInOctas = Math.floor(amount * 100000000);
+      const walletAddress = account.address.toString();
+
+      console.log(`Sending ${amount} APT (${amountInOctas} Octas) to agent wallet...`);
 
       const response = await signAndSubmitTransaction({
         data: {
@@ -47,9 +51,33 @@ export default function StartPage() {
         },
       });
 
+      console.log('Transaction successful, hash:', response.hash);
       setTransactionHash(response.hash);
-      setAptAmount("");
-      alert(`Successfully sent ${amount} APT to agent wallet!`);
+
+      // Update database after successful transaction
+      console.log('Updating database records...');
+      
+      // Update user's investment amount
+      const updatedUser = await updateUserInvestment(walletAddress, amount);
+      
+      if (updatedUser) {
+        console.log('User investment updated successfully:', updatedUser);
+        
+        // Create trade record
+        const newTrade = await createTrade(walletAddress, amount);
+        
+        if (newTrade) {
+          console.log('Trade record created successfully:', newTrade);
+          setAptAmount("");
+          alert(`Successfully sent ${amount} APT to agent wallet! Your investment has been recorded.`);
+        } else {
+          console.error('Failed to create trade record');
+          alert(`Transaction successful but failed to record trade. Transaction hash: ${response.hash}`);
+        }
+      } else {
+        console.error('Failed to update user investment');
+        alert(`Transaction successful but failed to update investment record. Transaction hash: ${response.hash}`);
+      }
     } catch (error) {
       console.error("Transaction failed:", error);
       alert("Transaction failed. Please try again.");
@@ -81,7 +109,19 @@ export default function StartPage() {
               </h1>
             </div>
             
-            <div className="flex items-center">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => router.push('/')}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => router.push('/status')}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Status
+              </button>
               <ConnectWallet />
             </div>
           </div>
@@ -137,7 +177,7 @@ export default function StartPage() {
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Processing...
+                    Processing Transaction...
                   </div>
                 ) : (
                   "Send APT to Agent"
@@ -155,7 +195,7 @@ export default function StartPage() {
               {transactionHash && (
                 <div className="mt-4 p-3 bg-green-900/20 border border-green-800/30 rounded-lg">
                   <p className="text-green-400 text-sm text-center">
-                    ✅ Transaction successful!
+                    ✅ Transaction successful! Investment recorded.
                   </p>
                   <p className="text-gray-400 text-xs text-center mt-1 break-all">
                     Hash: {transactionHash}
