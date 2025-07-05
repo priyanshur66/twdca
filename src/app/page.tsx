@@ -22,9 +22,9 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
            <div className="flex items-center">
-              <div className="w-8 h-8 bg-white rounded-lg mr-3 flex items-center justify-center">
-                <div className="w-4 h-4 bg-black rounded"></div>
-              </div>
+              <div className="relative w-8 h-8 bg-gradient-to-br mr-3 from-gray-900 to-black rounded-md flex items-center justify-center border-2 border-white/30">
+                    <div className="w-4 h-4 bg-gradient-to-br from-white to-gray-300 rounded shadow-2xl"></div>
+                  </div>
               <h1 className="text-2xl font-bold text-white tracking-wide">
                 TWDCA
               </h1>
@@ -310,10 +310,11 @@ const Footer = () => {
         <ScrollReveal>
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="text-center md:text-left">
-               <div className="flex items-center mb-2">
-              <div className="w-8 h-8 bg-white rounded-lg mr-3 flex items-center justify-center">
-                <div className="w-4 h-4 bg-black rounded"></div>
-              </div>
+              <div className="flex items-center mb-2">
+              
+              <div className="relative w-8 h-8 bg-gradient-to-br mr-3 from-gray-900 to-black rounded-md flex items-center justify-center border-2 border-white/30">
+                    <div className="w-4 h-4 bg-gradient-to-br from-white to-gray-300 rounded shadow-2xl"></div>
+                  </div>
               <h1 className="text-2xl font-bold text-white tracking-wide">
                 TWDCA
               </h1>
