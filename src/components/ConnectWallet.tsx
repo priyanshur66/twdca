@@ -20,8 +20,9 @@ export default function ConnectWallet({
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Ensure user record exists whenever a wallet connects; redirect only when requested
   useEffect(() => {
-    if (connected && account && redirectToStart) {
+    if (connected && account) {
       handleUserConnection();
     }
   }, [connected, account, redirectToStart]);
@@ -39,8 +40,11 @@ export default function ConnectWallet({
       const existingUser = await checkUserExists(walletAddress);
       
       if (existingUser) {
-        console.log('User exists, redirecting to /start');
-        router.push('/start');
+        console.log('User exists');
+        if (redirectToStart) {
+          console.log('Redirecting to /start');
+          router.push('/start');
+        }
       } else {
         console.log('User does not exist, creating new user');
         
@@ -53,8 +57,11 @@ export default function ConnectWallet({
           const verifyUser = await checkUserExists(walletAddress);
           
           if (verifyUser) {
-            console.log('User verification successful, redirecting to /start');
-            router.push('/start');
+            console.log('User verification successful');
+            if (redirectToStart) {
+              console.log('Redirecting to /start');
+              router.push('/start');
+            }
           } else {
             console.error('User verification failed');
             alert('There was an issue setting up your account. Please try again.');
@@ -142,11 +149,11 @@ export default function ConnectWallet({
             </div>
           ) : (
             <>
-              {petraWallet.icon && (
-                <img 
-                  src={petraWallet.icon} 
-                  alt="Petra" 
-                  className="w-5 h-5" 
+              {petraWallet?.icon && (
+                <img
+                  src={petraWallet.icon}
+                  alt="Petra"
+                  className="w-5 h-5"
                 />
               )}
               Connect Petra
@@ -156,4 +163,4 @@ export default function ConnectWallet({
       )}
     </div>
   );
-} 
+}

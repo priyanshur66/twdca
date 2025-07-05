@@ -16,12 +16,6 @@ export default function StatusPage() {
   const [totalProfit, setTotalProfit] = useState(0);
 
   useEffect(() => {
-    if (!connected) {
-      router.push('/');
-    }
-  }, [connected, router]);
-
-  useEffect(() => {
     if (connected && account) {
       fetchUserData();
     }
@@ -151,7 +145,7 @@ export default function StatusPage() {
                 <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 rounded-2xl p-6 border border-green-800/30">
                   <div className="text-center">
                     <div className="text-3xl mb-2">📈</div>
-                    <h3 className="text-lg font-semibold text-gray-300 mb-2">Total Profit</h3>
+                    <h3 className="text-lg font-semibold text-gray-300 mb-2">Total </h3>
                     <p className="text-2xl font-bold text-green-400">
                       {formatCurrency(totalProfit)}
                     </p>

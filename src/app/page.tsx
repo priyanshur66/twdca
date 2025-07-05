@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import ConnectWallet from "@/components/ConnectWallet";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -27,12 +28,12 @@ const Navbar = () => {
           </div>
           
           <div className="flex items-center gap-6">
-            <a href="/status" className="text-gray-400 hover:text-white transition-colors">
+            <Link href="/status" className="text-gray-400 hover:text-white transition-colors">
               Status
-            </a>
-            <a href="/start" className="text-gray-400 hover:text-white transition-colors">
+            </Link>
+            <Link href="/start" className="text-gray-400 hover:text-white transition-colors">
               Fund Agent
-            </a>
+            </Link>
             <ConnectWallet className="text-sm px-6 py-2 bg-white text-black  rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 " />
           </div>
         </div>

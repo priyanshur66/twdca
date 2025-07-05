@@ -15,12 +15,6 @@ export default function StartPage() {
 
   const AGENT_WALLET_ADDRESS = process.env.NEXT_PUBLIC_AGENT_WALLET_ADDRESS;
 
-  useEffect(() => {
-    if (!connected) {
-      router.push('/');
-    }
-  }, [connected, router]);
-
   const handleSendAPT = async () => {
     if (!aptAmount || !account || !AGENT_WALLET_ADDRESS) {
       alert("Please enter a valid APT amount and ensure agent wallet address is configured");
