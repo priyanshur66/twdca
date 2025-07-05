@@ -325,11 +325,11 @@ export default function StatusPage() {
                       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-400/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
                       <div className="relative z-10 text-center">
                         <div className="text-6xl mb-8 group-hover:scale-110 transition-transform duration-300">📈</div>
-                        <h3 className="text-xl font-semibold text-gray-300 mb-6 tracking-wide">Total Profit</h3>
+                        <h3 className="text-xl font-semibold text-gray-300 mb-6 tracking-wide">Total Value</h3>
                         <p className="text-4xl font-extralight text-white mb-3">
                           {formatCurrency(totalProfit)}
                         </p>
-                        <p className="text-base text-gray-400 font-medium">USD</p>
+                        <p className="text-base text-gray-400 font-medium">APT</p>
                       </div>
                     </div>
                   </div>
@@ -393,38 +393,43 @@ export default function StatusPage() {
                               <tr className="border-b-2 border-white/20">
                                 <th className="text-left py-8 px-8 font-semibold text-gray-300 text-xl tracking-wide">Date</th>
                                 <th className="text-left py-8 px-8 font-semibold text-gray-300 text-xl tracking-wide">Investment</th>
-                                <th className="text-left py-8 px-8 font-semibold text-gray-300 text-xl tracking-wide">Profit</th>
+                                <th className="text-left py-8 px-8 font-semibold text-gray-300 text-xl tracking-wide">Total Value</th>
                                 <th className="text-left py-8 px-8 font-semibold text-gray-300 text-xl tracking-wide">Status</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {trades.map((trade, index) => (
-                                <ScrollReveal key={trade.id} delay={500 + (index * 100)}>
-                                  <tr className="border-b border-white/10 hover:bg-white/5 transition-all duration-300 group">
-                                    <td className="py-8 px-8 text-gray-300 text-lg">
-                                      {formatDate(trade.created_at)}
-                                    </td>
-                                    <td className="py-8 px-8 text-white font-medium text-lg">
-                                      {trade.investment} APT
-                                    </td>
-                                    <td className="py-8 px-8 font-medium text-lg">
-                                      <span className={`${trade.profit >= 0 ? 'text-white' : 'text-gray-400'} group-hover:scale-105 transition-transform duration-300`}>
-                                        {formatCurrency(trade.profit)}
-                                      </span>
-                                    </td>
-                                    <td className="py-8 px-8">
-                                      <span className={`inline-flex items-center px-6 py-3 rounded-full text-sm font-medium backdrop-blur-sm transition-all duration-300 group-hover:scale-105 ${
-                                        trade.profit > 0 
-                                          ? 'bg-white/20 text-white border-2 border-white/40 shadow-lg shadow-white/10' 
-                                          : trade.profit < 0 
+                              {trades.map((trade) => (
+                                <tr
+                                  key={trade.id}
+                                  className="border-b border-white/10 hover:bg-white/5 transition-all duration-300 group"
+                                >
+                                  <td className="py-8 px-8 text-gray-300 text-lg">
+                                    {formatDate(trade.created_at)}
+                                  </td>
+                                  <td className="py-8 px-8 text-white font-medium text-lg">
+                                    {trade.investment} APT
+                                  </td>
+                                  <td className="py-8 px-8 font-medium text-lg">
+                                    <span
+                                      className={`${trade.profit >= 0 ? 'text-white' : 'text-gray-400'} group-hover:scale-105 transition-transform duration-300`}
+                                    >
+                                      {formatCurrency(trade.profit)}
+                                    </span>
+                                  </td>
+                                  <td className="py-8 px-8">
+                                    <span
+                                      className={`inline-flex items-center px-6 py-3 rounded-full text-sm font-medium backdrop-blur-sm transition-all duration-300 group-hover:scale-105 ${
+                                        trade.profit > 0
+                                          ? 'bg-white/20 text-white border-2 border-white/40 shadow-lg shadow-white/10'
+                                          : trade.profit < 0
                                           ? 'bg-gray-500/20 text-gray-400 border-2 border-gray-400/40 shadow-lg shadow-gray-400/10'
                                           : 'bg-gray-600/20 text-gray-300 border-2 border-gray-300/40 shadow-lg shadow-gray-300/10'
-                                      }`}>
-                                        {trade.profit > 0 ? '✓ Profit' : trade.profit < 0 ? '✗ Loss' : '⏳ Pending'}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                </ScrollReveal>
+                                      }`}
+                                    >
+                                      {trade.profit > 0 ? '✓ Profit' : trade.profit < 0 ? '✗ Loss' : '⏳ Pending'}
+                                    </span>
+                                  </td>
+                                </tr>
                               ))}
                             </tbody>
                           </table>
@@ -435,79 +440,7 @@ export default function StatusPage() {
                 </div>
               </ScrollReveal>
 
-              {/* Enhanced monochrome portfolio summary */}
-              {user && (
-                <ScrollReveal delay={600}>
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-gray-400/5 rounded-3xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                    <div className="relative bg-black/70 backdrop-blur-2xl border-2 border-white/20 rounded-3xl p-10 overflow-hidden">
-                      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/5 to-transparent"></div>
-                      
-                      <div className="relative z-10">
-                        <h2 className="text-4xl font-extralight mb-12 text-center tracking-wide">
-                          Portfolio
-                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-gray-400 font-light">
-                            {' '}Summary
-                          </span>
-                        </h2>
-                        
-                        <div className="grid md:grid-cols-2 gap-10">
-                          <div className="space-y-8">
-                            <div className="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border-2 border-white/10 hover:bg-white/10 transition-all duration-300">
-                              <div className="flex justify-between items-center mb-4">
-                                <span className="text-gray-400 text-lg font-medium">Wallet Address</span>
-                              </div>
-                                <span
-                                className={`text-base text-white font-mono break-all bg-black/30 p-4 rounded-xl border border-white/20 ${
-                                  user.wallet_address.length > 42 ? "whitespace-pre-wrap" : "whitespace-nowrap"
-                                }`}
-                                >
-                                {user.wallet_address}
-                                </span>
-                            </div>
-                            
-                            <div className="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border-2 border-white/10 hover:bg-white/10 transition-all duration-300">
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-400 text-lg font-medium">Member Since</span>
-                                <span className="text-white font-semibold text-lg">
-                                  {formatDate(user.created_at)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-8">
-                            <div className="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border-2 border-white/10 hover:bg-white/10 transition-all duration-300">
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-400 text-lg font-medium">ROI</span>
-                                <span className={`font-bold text-2xl ${
-                                  user.investment_amount > 0 
-                                    ? totalProfit >= 0 ? 'text-white' : 'text-gray-400'
-                                    : 'text-gray-500'
-                                }`}>
-                                  {user.investment_amount > 0 
-                                    ? `${((totalProfit / user.investment_amount) * 100).toFixed(2)}%`
-                                    : 'N/A'
-                                  }
-                                </span>
-                              </div>
-                            </div>
-                            
-                            <div className="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border-2 border-white/10 hover:bg-white/10 transition-all duration-300">
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-400 text-lg font-medium">Last Updated</span>
-                                <span className="text-white font-semibold text-lg">
-                                  {formatDate(user.updated_at)}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ScrollReveal>
-              )}
+             
             </>
           )}
         </div>
