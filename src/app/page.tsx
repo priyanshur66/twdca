@@ -1,4 +1,5 @@
 import React from "react";
+import ConnectWallet from "@/components/ConnectWallet";
 
 const Navbar = () => {
   return (
@@ -12,9 +13,7 @@ const Navbar = () => {
           </div>
           
           <div className="flex items-center">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-              Connect Wallet
-            </button>
+            <ConnectWallet />
           </div>
         </div>
       </div>
@@ -92,9 +91,10 @@ const page = () => {
                 />
               ))}
             </div>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg px-16 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
-              Connect wallet 
-            </button>
+            <ConnectWallet 
+              className="text-lg px-16 py-4 rounded-full"
+              redirectToStart={true}
+            />
           </div>
         </div>
       </div>
