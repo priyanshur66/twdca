@@ -102,7 +102,7 @@ export default function ConnectWallet({
         <button
           onClick={handleConnect}
           disabled={isProcessing}
-          className={`bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:transform-none shadow-lg ${className}`}
+          className={`bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-black hover:text-white font-semibold px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:transform-none shadow-lg ${className}`}
         >
           {isProcessing ? 'Processing...' : 'Disconnect'}
         </button>
@@ -133,7 +133,7 @@ export default function ConnectWallet({
         <button
           onClick={handleConnect}
           disabled={isProcessing}
-          className={`bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:transform-none shadow-lg flex items-center gap-3 ${className}`}
+          className={`bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-black font-semibold px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:transform-none shadow-lg flex items-center gap-3 ${className}`}
         >
           {isProcessing ? (
             <div className="flex items-center gap-2">
