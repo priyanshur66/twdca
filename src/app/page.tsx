@@ -16,25 +16,27 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-1000 ${
-      scrollY > 50 ? 'bg-black/95 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
-    } ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-           <div className="flex items-center">
-              <div className="relative w-8 h-8 bg-gradient-to-br mr-3 from-gray-900 to-black rounded-md flex items-center justify-center border-2 border-white/30">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-2xl border-b border-white/20">
+        <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-18">
+            <div className="flex items-center">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-gray-400/20 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                <div className="flex items-center mb-2">
+                  <div className="relative w-8 h-8 bg-gradient-to-br mr-3 from-gray-900 to-black rounded-md flex items-center justify-center border-2 border-white/30">
                     <div className="w-4 h-4 bg-gradient-to-br from-white to-gray-300 rounded shadow-2xl"></div>
                   </div>
-              <h1 className="text-2xl font-bold text-white tracking-wide">
-                TWDCA
-              </h1>
+                  <h1 className="text-2xl font-bold text-white tracking-wide">
+                    TWDCA
+                  </h1>
+                </div>
+              </div>
             </div>
-          
           <div className="flex items-center gap-6">
-            <Link href="/status" className="text-gray-400 hover:text-white transition-colors">
+            <Link href="/status" className="text-gray-300 hover:text-white transition-all duration-300 hover:scale-110 font-medium relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all after:duration-300 hover:after:w-full">
               Status
             </Link>
-            <Link href="/start" className="text-gray-400 hover:text-white transition-colors">
+            <Link href="/start" className="text-gray-300 hover:text-white transition-all duration-300 hover:scale-110 font-medium relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-white after:transition-all after:duration-300 hover:after:w-full">
               Fund Agent
             </Link>
             <ConnectWallet className="text-sm px-6 py-2 bg-white text-black  rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 " />
