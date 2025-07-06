@@ -39,9 +39,7 @@ const ScrollReveal = ({ children, delay = 0, direction = 'up', className = "" })
     <div
       ref={setRef}
       className={`transition-all duration-1000 ${
-        isVisible 
-          ? 'opacity-100 translate-y-0 translate-x-0' 
-          : `opacity-0 ${getTransform()}`
+        isVisible ? 'opacity-100 translate-y-0 translate-x-0' : `opacity-0 ${getTransform()}`
       } ${className}`}
     >
       {children}
@@ -98,29 +96,20 @@ const FloatingParticles = () => {
 };
 
 // Black and white animated background
-const AnimatedBackground = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Large monochrome orbs */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-white/10 to-gray-400/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-gray-400/10 to-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute -bottom-32 -left-20 w-96 h-96 bg-gradient-to-br from-gray-500/10 to-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      <div className="absolute -bottom-20 -right-32 w-80 h-80 bg-gradient-to-br from-white/10 to-gray-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }} />
-      
-      {/* Center monochrome aurora effect */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-gradient-to-br from-white/8 via-transparent to-white/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
-      
-      {/* Monochrome grid overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
-      
-      {/* Subtle diagonal lines */}
-      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(255,255,255,0.02)_49%,rgba(255,255,255,0.02)_51%,transparent_52%)] bg-[size:20px_20px]" />
-    </div>
-  );
-};
+const AnimatedBackground = () => (
+  <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-white/10 to-gray-400/10 rounded-full blur-3xl animate-pulse" />
+    <div className="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-gray-400/10 to-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+    <div className="absolute -bottom-32 -left-20 w-96 h-96 bg-gradient-to-br from-gray-500/10 to-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+    <div className="absolute -bottom-20 -right-32 w-80 h-80 bg-gradient-to-br from-white/10 to-gray-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }} />
+    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-gradient-to-br from-white/8 via-transparent to-white/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
+    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+    <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(255,255,255,0.02)_49%,rgba(255,255,255,0.02)_51%,transparent_52%)] bg-[size:20px_20px]" />
+  </div>
+);
 
 export default function StartPage() {
-  const { connected, account, wallet, network, signAndSubmitTransaction } = useWallet();
+  const { connected, account, signAndSubmitTransaction } = useWallet();
   const router = useRouter();
   const [aptAmount, setAptAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -144,11 +133,8 @@ export default function StartPage() {
     setTransactionHash("");
 
     try {
-      // Convert APT to Octas (1 APT = 100,000,000 Octas)
       const amountInOctas = Math.floor(amount * 100000000);
       const walletAddress = account.address.toString();
-
-      console.log(`Sending ${amount} APT (${amountInOctas} Octas) to agent wallet...`);
 
       const response = await signAndSubmitTransaction({
         data: {
@@ -158,32 +144,25 @@ export default function StartPage() {
         },
       });
 
-      console.log('Transaction successful, hash:', response.hash);
       setTransactionHash(response.hash);
 
-      // Update database after successful transaction
-      console.log('Updating database records...');
-      
-      // Update user's investment amount
       const updatedUser = await updateUserInvestment(walletAddress, amount);
-      
       if (updatedUser) {
-        console.log('User investment updated successfully:', updatedUser);
-        
-        // Create trade record
         const newTrade = await createTrade(walletAddress, amount);
-        
         if (newTrade) {
-          console.log('Trade record created successfully:', newTrade);
+          // Trigger server-side swap into AMI, THL and LSD
+          try {
+            await fetch('/api/buy-multiple-tokens', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ amount }),
+            });
+          } catch (swapErr) {
+            console.error('Background swap failed', swapErr);
+          }
           setAptAmount("");
           alert(`Successfully sent ${amount} APT to agent wallet! Your investment has been recorded.`);
-        } else {
-          console.error('Failed to create trade record');
-          alert(`Transaction successful but failed to record trade. Transaction hash: ${response.hash}`);
         }
-      } else {
-        console.error('Failed to update user investment');
-        alert(`Transaction successful but failed to update investment record. Transaction hash: ${response.hash}`);
       }
     } catch (error) {
       console.error("Transaction failed:", error);
@@ -198,30 +177,17 @@ export default function StartPage() {
       <div className="min-h-screen bg-black text-white relative overflow-hidden">
         <FloatingParticles />
         <AnimatedBackground />
-
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="text-center">
             <ScrollReveal>
-              <div className="w-full flex items-center justify-center mb-8">
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-gray-400/20 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-                  <div className="relative w-32 h-32 bg-gradient-to-br from-gray-900 to-black rounded-2xl flex items-center justify-center border-2 border-white/30">
-                    <div className="w-20 h-20 bg-gradient-to-br from-white to-gray-300 rounded-xl shadow-2xl"></div>
-                  </div>
-                </div>
-              </div>
               <h1 className="text-5xl md:text-7xl font-extralight mb-6 tracking-wide">
                 Connect Your
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-gray-400 font-light">
-                  {' '}Wallet
-                </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-gray-400 font-light"> Wallet</span>
               </h1>
               <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
                 Please connect your wallet to fund your agent and start copy trading with advanced analytics
               </p>
-              <div className="relative group">
-                <ConnectWallet className="relative text-xl px-16 py-5 bg-white text-black rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-110 shadow-2xl mx-auto border-2 border-white/30" />
-              </div>
+              <ConnectWallet className="relative text-xl px-16 py-5 bg-white text-black rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-110 shadow-2xl mx-auto border-2 border-white/30" />
             </ScrollReveal>
           </div>
         </div>
