@@ -1,8 +1,47 @@
+# TWDCA 
+
+TWDCA is a decentralized copy-trading agent that automatically allocates user funds to the most relevant on-chain traders, mirrors their positions, and liquidates them to return profit (APT/USD) to the investor.
+
+## Architecture / Workflow Diagram
+
+
+### Mermaid Diagram
+
+```mermaid
+flowchart LR
+    A["User Invests"] --> B["Backend gets\nrelevant traders"]
+    B --> C["Buys tokens\nfrom user funds"]
+    C --> B
+    B --> D["Liquidates position\nand return APT/USD"]
+    D --> B
+    B --> E["User Exits"]
+    B --> F["GraphQL Transaction Feed"]
+```
+
+1. **User Invests** – The investor deposits funds through the dApp.  
+2. **Backend Gets Relevant Traders** – The backend continuously ranks on-chain wallets and selects the best performing traders.  
+3. **Buys Tokens From User Funds** – Selected trader positions are mirrored with the user's capital.  
+4. **Liquidates Position & Returns APT/USD** – Positions are exited automatically based on strategy or when the user requests an exit.  
+5. **All Transactions Exposed via GraphQL** – Every on-chain action is indexed and available through a GraphQL endpoint for transparency and analytics.
+
+## Agent Wallet Address
+
+```
+0xd3b70f1f4b2d114f8240956ab4c261d40122979dfc5196ccc5a2ab0787a58dfb
+```
+
+## Contact
+
+- **Name:** Priyanshu Ranjan  
+- **Email:** <priyanshuranjan0001@gmail.com>
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-First, run the development server:
+First enter env details then run the development server:
 
 ```bash
 npm run dev
